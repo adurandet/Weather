@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/standard_card_view"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/weather_card_icon"
+                android:layout_width="@dimen/card_weather_icon"
+                android:layout_height="@dimen/card_weather_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/weather_card_name"
+                style="@style/textH2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_padding"
+                app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Sydney" />
+
+            <TextView
+                android:id="@+id/weather_card_description"
+                style="@style/textH1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_padding"
+                app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintTop_toBottomOf="@id/weather_card_name"
+                tools:text="Light Rain" />
+
+            <TextView
+                android:id="@+id/weather_card_temperature"
+                style="@style/textNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_padding"
+                app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintTop_toBottomOf="@id/weather_card_description"
+                tools:text="18 °C" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

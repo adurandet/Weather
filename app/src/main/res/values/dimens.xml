@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_drawable_padding">8dp</dimen>
+    <dimen name="standard_edit_text_padding">8dp</dimen>
+    <dimen name="standard_radius">8dp</dimen>
+    <dimen name="standard_stroke_width">1dp</dimen>
+    <dimen name="standard_padding">16dp</dimen>
+    <dimen name="card_weather_icon">56dp</dimen>
+    <dimen name="standard_card_elevation">4dp</dimen>
+</resources>

@@ -22,6 +22,7 @@ android {
 
             buildConfigField("String", "BASE_URL", '"https://api.openweathermap.org/data/2.5/"')
             buildConfigField("String", "WEATHER_API_KEY", '"95d190a434083879a6398aafd54d9e73"')
+            buildConfigField("String", "BASE_IMAGE_URL", '"https://openweathermap.org/img/wn/%1s@2x.png"')
         }
 
         debug {
@@ -29,6 +30,7 @@ android {
 
             buildConfigField("String", "BASE_URL", '"https://api.openweathermap.org/data/2.5/"')
             buildConfigField("String", "WEATHER_API_KEY", '"95d190a434083879a6398aafd54d9e73"')
+            buildConfigField("String", "BASE_IMAGE_URL", '"https://openweathermap.org/img/wn/%1s@2x.png"')
         }
     }
 }

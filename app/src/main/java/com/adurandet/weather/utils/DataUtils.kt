@@ -1,14 +1,17 @@
 package com.adurandet.weather.utils
 
+import com.adurandet.weather.BuildConfig
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-fun String.toIconUrl() = "https://openweathermap.org/img/wn/$this@2x.png"
+const val NOT_A_NUMBER_RESULT = "X.X"
+
+fun String.toIconUrl() = String.format(BuildConfig.BASE_IMAGE_URL, this)
 
 fun String.roundNumber(numberOfDecimal: Int = 1): String {
     return try {
         BigDecimal(this).setScale(numberOfDecimal, RoundingMode.HALF_EVEN).toString()
     } catch (e : NumberFormatException){
-        "X.X"
+        NOT_A_NUMBER_RESULT
     }
 }

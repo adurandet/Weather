@@ -10,6 +10,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiHelper {
 
+    companion object {
+        const val UNITS = "metric"
+    }
+
     private var apiInterface: ApiInterface
 
     init {
@@ -18,6 +22,8 @@ class ApiHelper {
 
             val url = request.url().newBuilder()
                 .addQueryParameter("appid", BuildConfig.WEATHER_API_KEY)
+                // Units could be customisable by the user, and passed as a function parameter.
+                .addQueryParameter("units", UNITS)
                 .build()
 
             val requestBuilder = request.newBuilder()
@@ -48,5 +54,7 @@ class ApiHelper {
     fun getWeatherById(id: String) = apiInterface.getWeatherById(id)
 
     fun getWeatherByCityName(cityName: String) = apiInterface.getWeatherByCityName(cityName)
+
+    fun getWeatherByZipCode(zipCode: String) = apiInterface.getWeatherByZipCode(zipCode)
 
 }

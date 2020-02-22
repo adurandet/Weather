@@ -19,4 +19,7 @@ interface ApiInterface {
     @GET("weather")
     fun getWeatherByCityName(@Query("q") cityName: String): Call<GetWeatherResponse>
 
+    @GET("weather")
+    fun getWeatherByZipCode(@Query("zip") cityName: String): Call<GetWeatherResponse>
+
 }

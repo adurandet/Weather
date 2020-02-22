@@ -3,11 +3,12 @@ package com.adurandet.weather.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.adurandet.weather.model.Search
+import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.model.Weather
 import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.network.response.GetWeatherResponse
 import com.adurandet.weather.network.Resource
+import com.adurandet.weather.utils.toIconUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,21 +18,24 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
     private val weatherLiveData = MutableLiveData<Resource<Weather>>()
 
     fun getWeather(
-        search: Search
+        searchRequest: SearchRequest
     ): LiveData<Resource<Weather>> {
 
         weatherLiveData.value = Resource.loading(weatherLiveData.value?.data)
 
-        val apiCall = with(search) { when {
-            lat != null && long != null -> apiHelper.getWeatherByLatLong(lat, long)
+        val apiCall = with(searchRequest) {
+            when {
+                !id.isNullOrEmpty() -> apiHelper.getWeatherById(id)
 
-            !id.isNullOrEmpty() -> apiHelper.getWeatherById(id)
+                lat != null && long != null -> apiHelper.getWeatherByLatLong(lat, long)
 
-            !cityName.isNullOrEmpty() -> apiHelper.getWeatherByCityName(cityName)
+                !zipCode.isNullOrEmpty() -> apiHelper.getWeatherByZipCode(zipCode)
 
-            else -> null
-        }}
+                !cityName.isNullOrEmpty() -> apiHelper.getWeatherByCityName(cityName)
 
+                else -> null
+            }
+        }
 
         apiCall?.run {
 
@@ -39,7 +43,7 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
 
                 override fun onFailure(call: Call<GetWeatherResponse>, t: Throwable) {
                     Log.e("WeatherRepository", t.message)
-                    weatherLiveData.value = Resource.error(t.message ?: "", null)
+                    triggerGetWeatherError(t.message)
                 }
 
                 override fun onResponse(
@@ -52,17 +56,28 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
 
                     val weather = response.body()?.toWeather()
                     weatherLiveData.value = Resource.success(weather)
+
                 }
             })
 
         } ?: run {
-            weatherLiveData.value = Resource.error("", null)
+            weatherLiveData.value = Resource.error("Wrong Search request", null)
         }
 
         return weatherLiveData
     }
+
+    private fun triggerGetWeatherError(message: String?) {
+        weatherLiveData.value = Resource.error(message ?: "", null)
+    }
 }
 
 private fun GetWeatherResponse.toWeather() =
-    Weather(id, name, weather.description, main.temp, weather.icon)
+    Weather(
+        id,
+        name,
+        weather[0].description,
+        main.temp,
+        weather[0].icon.toIconUrl()
+    )
 

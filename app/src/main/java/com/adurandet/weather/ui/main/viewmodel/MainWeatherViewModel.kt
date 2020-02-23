@@ -19,6 +19,8 @@ class MainWeatherViewModel(
         const val LAST_WEATHER_ID = "LAST_WEATHER_ID"
     }
 
+    private lateinit var lastSearchId: String
+
     private val _triggerSearchLiveData = MutableLiveData<SearchRequest>()
 
     private val _weatherLiveData = Transformations.switchMap(_triggerSearchLiveData) {
@@ -27,26 +29,43 @@ class MainWeatherViewModel(
 
     val weatherLiveData: LiveData<Resource<Weather?>> = Transformations.map(_weatherLiveData) { weatherResponse ->
 
-        if( weatherResponse is Success){
-            weatherResponse.data?.let { savedStateHandle.set(LAST_WEATHER_ID, it.id) }
+        if (weatherResponse is Success) {
+            weatherResponse.data?.let {
+                lastSearchId = it.id
+                savedStateHandle.set(LAST_WEATHER_ID, it.id)
+            }
         }
 
         weatherResponse
     }
 
+    private val _triggerGetSearchRequestHistory = MutableLiveData<Boolean>()
+
+    private val _searchRequestHistory = Transformations.switchMap(_triggerGetSearchRequestHistory) {
+        weatherRepository.getWeatherSearchHistory()
+    }
+
+    val searchRequestHistory = Transformations.map(_searchRequestHistory) { searchRequestHistory ->
+
+        if (lastSearchId.isEmpty() && searchRequestHistory.isNotEmpty()) {
+            searchById(searchRequestHistory[0].id)
+        }
+
+        searchRequestHistory
+    }
 
     init {
 
-        val lastSearchId = savedStateHandle[LAST_WEATHER_ID] ?: ""
+        lastSearchId = savedStateHandle[LAST_WEATHER_ID] ?: ""
 
-        Log.d("MainWeatherViewModel", "lastSearchId: $lastSearchId")
-        Log.d("MainWeatherViewModel",  "weatherLiveData.value is null: ${weatherLiveData.value == null}")
-
-        if (lastSearchId.isNotEmpty() && weatherLiveData.value == null) {
+        if (lastSearchId.isNotEmpty()) {
             searchById(lastSearchId)
+        } else {
+            getSearchRequestHistory()
         }
 
     }
+
 
     fun search(search: String) {
 
@@ -76,6 +95,10 @@ class MainWeatherViewModel(
 
         _triggerSearchLiveData.value = searchRequest
 
+    }
+
+    private fun getSearchRequestHistory() {
+        _triggerGetSearchRequestHistory.value = true
     }
 
 }

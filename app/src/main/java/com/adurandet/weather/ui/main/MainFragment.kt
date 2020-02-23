@@ -71,6 +71,10 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
 
         activity?.let { locationInteractor = LocationInteractor(it, this) }
 
+        mainWeatherViewModel.searchRequestHistory.observe(this, Observer {
+            // TODO
+        })
+
         mainWeatherViewModel.weatherLiveData.observe(this, Observer {
             processWeatherSearchResult(it)
         })

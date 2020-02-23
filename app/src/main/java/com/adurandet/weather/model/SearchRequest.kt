@@ -1,6 +1,5 @@
 package com.adurandet.weather.model
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -13,5 +12,5 @@ data class SearchRequest @JvmOverloads constructor(
     @Ignore val lat: Double? = null,
     @Ignore val long: Double? = null,
     @Ignore val zipCode: String? = null,
-    @ColumnInfo(name = "created_at") var createdAt: Long? = null
+    @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis()
 )

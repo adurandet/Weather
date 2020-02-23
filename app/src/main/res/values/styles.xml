@@ -13,6 +13,7 @@
         <item name="android:drawableStart">@drawable/ic_search</item>
         <item name="android:drawablePadding">@dimen/standard_drawable_padding</item>
         <item name="android:padding">@dimen/standard_edit_text_padding</item>
+        <item name="android:singleLine">true</item>
         <item name="editTextStyle">@style/textNormal</item>
     </style>
 

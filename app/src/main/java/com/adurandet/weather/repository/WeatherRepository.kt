@@ -3,6 +3,7 @@ package com.adurandet.weather.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.adurandet.weather.database.SearchRequestDao
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.*
 import com.adurandet.weather.network.response.GetWeatherResponse
@@ -11,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WeatherRepository(private val apiHelper: ApiHelper) {
+class WeatherRepository(private val apiHelper: ApiHelper, private val searchRequestDao: SearchRequestDao) {
 
     private val weatherLiveData = MutableLiveData<Resource<Weather?>>()
 

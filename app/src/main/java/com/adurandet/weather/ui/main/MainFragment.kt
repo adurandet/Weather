@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
+import com.adurandet.weather.database.AppDataBase
 import com.adurandet.weather.interactor.LocationInteractor
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
@@ -27,12 +28,20 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
         fun newInstance() = MainFragment()
     }
 
-    private val apiHelper = ApiHelper()
-    private val weatherRepository = WeatherRepository(apiHelper)
-    private val weatherViewModelFactory = WeatherViewModelProviderFactory(weatherRepository, this)
-    private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
-        weatherViewModelFactory
+    private val apiHelper  by lazy { ApiHelper() }
+
+    private val searchRequestDao by lazy {
+        AppDataBase.getInstance(requireContext()).searchRequestDao()
     }
+
+    private val weatherRepository by lazy {
+        WeatherRepository(apiHelper, searchRequestDao)
+    }
+
+    private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
+        WeatherViewModelProviderFactory(weatherRepository, this)
+    }
+
     private lateinit var locationInteractor: LocationInteractor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -51,6 +60,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
         })
 
         view.weather_fragment_use_my_location_button.setOnClickListener {
+            view.weather_fragment_search_edt.text.clear()
             locationInteractor.verifyLocationPermissionsAndGetLocation()
         }
 
@@ -125,5 +135,4 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
             weather_fragment_weather_card.isVisible = true
         }
     }
-
 }

@@ -1,16 +1,15 @@
 package com.adurandet.weather.ui.main.viewmodel
 
-import android.text.TextUtils
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.model.Weather
-import com.adurandet.weather.repository.WeatherRepository
 import com.adurandet.weather.repository.Resource
+import com.adurandet.weather.repository.WeatherRepository
 import com.adurandet.weather.utils.isNumberOnly
+import com.google.android.gms.maps.model.LatLng
 
 class MainWeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
 
@@ -23,6 +22,8 @@ class MainWeatherViewModel(private val weatherRepository: WeatherRepository) : V
 
     fun search(search: String) {
 
+        if (search.isEmpty()) return
+
         val searchRequest = if (search.isNumberOnly()) {
             SearchRequest(zipCode = search)
         } else {
@@ -30,6 +31,15 @@ class MainWeatherViewModel(private val weatherRepository: WeatherRepository) : V
         }
 
         _triggerSearchLiveData.value = searchRequest
+
+    }
+
+    fun search(latLong: LatLng) {
+
+        val searchRequest = SearchRequest(lat = latLong.latitude, long = latLong.longitude)
+
+        _triggerSearchLiveData.value = searchRequest
+
     }
 
 }

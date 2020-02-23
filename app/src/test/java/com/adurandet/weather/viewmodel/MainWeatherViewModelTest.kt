@@ -1,13 +1,15 @@
-package com.adurandet.weather
+package com.adurandet.weather.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.adurandet.weather.*
 import com.adurandet.weather.model.DataNotFoundError
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.model.Weather
 import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
+import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -99,6 +101,31 @@ class MainWeatherViewModelTest {
         )
 
         mainWeatherViewModel.search(mockZipCode)
+
+        Mockito.verify(weatherRepository).getWeather(searchRequest)
+        val captor: ArgumentCaptor<Success<Weather>> = forClass()
+        captor.run {
+            Mockito.verify(observer).onChanged(capture())
+            Assert.assertEquals(mockWeatherLiveData.value, value)
+        }
+    }
+
+    @Test
+    fun noSearchWeatherEmptyStringTest(){
+        mainWeatherViewModel.search("")
+        Mockito.verifyZeroInteractions(weatherRepository)
+    }
+
+    @Test
+    fun searchWeatherByLatLongTest(){
+
+        val mockWeatherLiveData = MutableLiveData(Success<Weather?>(mockWeatherModel))
+        val searchRequest = SearchRequest(lat = mockLat, long = mockLong)
+        Mockito.doReturn(mockWeatherLiveData).`when`(weatherRepository).getWeather(
+            searchRequest
+        )
+
+        mainWeatherViewModel.search(LatLng(mockLat, mockLong))
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         val captor: ArgumentCaptor<Success<Weather>> = forClass()

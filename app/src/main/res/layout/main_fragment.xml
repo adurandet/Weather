@@ -32,6 +32,17 @@
         app:layout_constraintBottom_toBottomOf="@id/weather_fragment_search_edt"
         />
 
+    <Button
+        android:id="@+id/weather_fragment_use_my_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/weather_fragment_search_edt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAllCaps="false"
+        android:text="@string/user_my_location"
+        />
+
     <com.adurandet.weather.ui.main.view.WeatherCardView
         android:id="@+id/weather_fragment_weather_card"
         android:layout_width="match_parent"
@@ -41,6 +52,6 @@
         android:layout_marginTop="@dimen/standard_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weather_fragment_search_edt"/>
+        app:layout_constraintTop_toBottomOf="@id/weather_fragment_use_my_location_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

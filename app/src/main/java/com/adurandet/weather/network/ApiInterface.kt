@@ -8,10 +8,7 @@ import retrofit2.http.Query
 interface ApiInterface {
 
     @GET("weather")
-    fun getWeatherByLatLong(
-        @Query("lat") lat: Double,
-        @Query("long") long: Double
-    ): Call<GetWeatherResponse>
+    fun getWeatherByLatLong( @Query("lat") lat: Double,  @Query("lon") long: Double ): Call<GetWeatherResponse>
 
     @GET("weather")
     fun getWeatherById(@Query("id") id: String): Call<GetWeatherResponse>

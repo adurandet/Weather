@@ -55,18 +55,22 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
                     )
 
                     when (response.code()) {
-                        // More HTTP Code should be manage.
-                        // A class implementing CallBack<T> should be created to manage
-                        // the generic response for every request
-                        404 -> {
-                            triggerGetWeatherError(DataNotFoundError())
-                        }
 
-                        else -> {
+                        200 -> {
                             val weather = response.body()?.toWeather()
                             weatherLiveData.value =
                                 Success(weather)
                         }
+
+                        400 -> triggerGetWeatherError(BadRequestError())
+
+                        404 -> triggerGetWeatherError(DataNotFoundError())
+
+                        // More HTTP Code should be managed.
+                        // A class implementing CallBack<T> should be created to manage
+                        // the response for every request
+                        else -> triggerGetWeatherError(CallError(response.message()))
+
                     }
 
 
@@ -87,7 +91,7 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
     }
 }
 
-private fun GetWeatherResponse.toWeather() =
+fun GetWeatherResponse.toWeather() =
     Weather(
         id,
         name,
@@ -95,4 +99,3 @@ private fun GetWeatherResponse.toWeather() =
         main.temp,
         weather[0].icon.toIconUrl()
     )
-

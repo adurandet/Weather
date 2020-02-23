@@ -10,16 +10,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
+import com.adurandet.weather.interactor.LocationInteractor
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.*
 import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
 import com.adurandet.weather.utils.showError
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.android.synthetic.main.main_fragment.view.*
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), LocationInteractor.Callback {
 
     companion object {
         fun newInstance() = MainFragment()
@@ -31,11 +34,9 @@ class MainFragment : Fragment() {
     private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
         weatherViewModelFactory
     }
+    private lateinit var locationInteractor: LocationInteractor
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         val view = inflater.inflate(R.layout.main_fragment, container, false)
         initListeners(view)
@@ -50,15 +51,42 @@ class MainFragment : Fragment() {
             }
         })
 
+        view.weather_fragment_use_my_location_button.setOnClickListener {
+            locationInteractor.verifyLocationPermissionsAndGetLocation()
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        activity?.let { locationInteractor = LocationInteractor(it, this) }
+
         mainWeatherViewModel.weatherLiveData.observe(this, Observer {
             processWeatherSearchResult(it)
         })
 
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            LOCATION_REQUEST_CODE -> locationInteractor.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+
+    }
+
+    override fun onLocationReceived(latLng: LatLng) {
+        mainWeatherViewModel.search(latLng)
+    }
+
+    override fun onLocationPermissionsNotGranted() {
+        showError(getString(R.string.location_not_granted))
+    }
+
+    override fun onLocationNotReceived() {
+        showError(getString(R.string.no_location_received))
     }
 
     private fun processWeatherSearchResult(weatherResource: Resource<Weather?>) {
@@ -84,7 +112,7 @@ class MainFragment : Fragment() {
     }
 
     private fun processWeatherSearchError(codeError: CodeError) {
-        val message = when (codeError){
+        val message = when (codeError) {
             is CallError -> codeError.message
             is BadRequestError -> getString(R.string.wrong_search_request)
             is DataNotFoundError -> getString(R.string.weather_not_found)

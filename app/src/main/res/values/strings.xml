@@ -6,4 +6,7 @@
     <string name="celsius">°C</string>
     <string name="wrong_search_request">Search parameters are not correct. Please enter a correct zip code or city name.</string>
     <string name="weather_not_found">No result for this research.</string>
+    <string name="location_not_granted">Location permission not granted. Please change your settings</string>
+    <string name="no_location_received">No location received. Please try again.</string>
+    <string name="user_my_location">Use my location</string>
 </resources>

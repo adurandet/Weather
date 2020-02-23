@@ -10,7 +10,7 @@ fun Fragment.showError(message: String?) {
     } else {
         message
     }
-    view?.let{
-        Snackbar.make(it, errorMessage, Snackbar.LENGTH_LONG).show()
+    activity?.let{
+        Snackbar.make(it.findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show()
     }
 }

@@ -4,11 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.adurandet.weather.*
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
-import com.adurandet.weather.network.Failure
-import com.adurandet.weather.network.Loading
-import com.adurandet.weather.network.Success
 import com.adurandet.weather.network.response.GetWeatherResponse
-import com.adurandet.weather.utils.mock
+import com.adurandet.weather.mock
 import com.adurandet.weather.utils.toIconUrl
 import junit.framework.Assert
 import okhttp3.ResponseBody
@@ -27,7 +24,8 @@ class WeatherRepositoryTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val callMocked: Call<GetWeatherResponse> = mock()
+    private val callMocked: Call<GetWeatherResponse> =
+        mock()
     private val apiHelperMocked: ApiHelper = mock()
     private lateinit var weatherRepository: WeatherRepository
 
@@ -46,14 +44,7 @@ class WeatherRepositoryTest {
         val searchRequest = SearchRequest(id = mockId)
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
-        val weather = Weather(
-            mockId,
-            mockName,
-            mockWeather.description,
-            mockMain.temp,
-            mockWeather.icon.toIconUrl()
-        )
-        val successData = Success(weather)
+        val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherById(mockId)
         Assert.assertEquals( successData, weatherLiveData.value)
@@ -69,14 +60,7 @@ class WeatherRepositoryTest {
         val searchRequest = SearchRequest(lat = mockLat, long = mockLong)
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
-        val weather = Weather(
-            mockId,
-            mockName,
-            mockWeather.description,
-            mockMain.temp,
-            mockWeather.icon.toIconUrl()
-        )
-        val successData = Success(weather)
+        val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherByLatLong(mockLat, mockLong)
         Assert.assertEquals( successData, weatherLiveData.value)
@@ -92,14 +76,7 @@ class WeatherRepositoryTest {
         val searchRequest = SearchRequest(zipCode = mockZipCode)
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
-        val weather = Weather(
-            mockId,
-            mockName,
-            mockWeather.description,
-            mockMain.temp,
-            mockWeather.icon.toIconUrl()
-        )
-        val successData = Success(weather)
+        val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherByZipCode(mockZipCode)
         Assert.assertEquals( successData, weatherLiveData.value)
@@ -140,7 +117,7 @@ class WeatherRepositoryTest {
 
 
         Mockito.verify(apiHelperMocked).getWeatherById(mockId)
-        Assert.assertEquals( Loading<GetWeatherResponse>(), weatherLiveData.value)
+        Assert.assertEquals(Loading<GetWeatherResponse>(), weatherLiveData.value)
 
     }
 

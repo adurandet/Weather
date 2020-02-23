@@ -12,7 +12,7 @@ import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.*
-import com.adurandet.weather.repository.WeatherRepository
+import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
 import com.adurandet.weather.utils.showError

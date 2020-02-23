@@ -20,7 +20,8 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
     ): LiveData<Resource<Weather?>> {
 
 
-        weatherLiveData.value = Loading((weatherLiveData.value as? Success)?.data)
+        weatherLiveData.value =
+            Loading((weatherLiveData.value as? Success)?.data)
 
         val apiCall = with(searchRequest) {
             when {
@@ -41,7 +42,7 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
             enqueue(object : Callback<GetWeatherResponse> {
 
                 override fun onFailure(call: Call<GetWeatherResponse>, t: Throwable) {
-                    Log.e("WeatherRepository", t.message)
+                    Log.e("WeatherRepository", t.message ?: "")
                     triggerGetWeatherError(CallError(t.message ?: ""))
                 }
 
@@ -63,7 +64,8 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
 
                         else -> {
                             val weather = response.body()?.toWeather()
-                            weatherLiveData.value = Success(weather)
+                            weatherLiveData.value =
+                                Success(weather)
                         }
                     }
 
@@ -80,7 +82,8 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
     }
 
     private fun triggerGetWeatherError(codeError: CodeError) {
-        weatherLiveData.value = Failure(codeError)
+        weatherLiveData.value =
+            Failure(codeError)
     }
 }
 

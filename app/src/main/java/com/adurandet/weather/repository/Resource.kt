@@ -1,4 +1,4 @@
-package com.adurandet.weather.network
+package com.adurandet.weather.repository
 
 import com.adurandet.weather.model.CodeError
 

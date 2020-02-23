@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_padding"
                 app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Sydney" />
 
@@ -37,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_padding"
                 app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/weather_card_name"
                 tools:text="Light Rain" />
 
@@ -47,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_padding"
                 app:layout_constraintStart_toEndOf="@id/weather_card_icon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/weather_card_description"
                 tools:text="18 °C" />
 

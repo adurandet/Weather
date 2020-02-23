@@ -1,4 +1,4 @@
-package com.adurandet.weather.utils
+package com.adurandet.weather
 
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito

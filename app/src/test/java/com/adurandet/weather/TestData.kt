@@ -3,6 +3,9 @@ package com.adurandet.weather
 import com.adurandet.weather.network.response.GetWeatherResponse
 import com.adurandet.weather.network.response.Main
 import com.adurandet.weather.network.response.Weather
+import com.adurandet.weather.utils.toIconUrl
+
+const val mockCallErrorMessage = "call error message"
 
 const val mockId = "123"
 
@@ -27,4 +30,10 @@ val mockGetWeatherResponse = GetWeatherResponse(
     mockMain
 )
 
-const val mockCallErrorMessage = "Serveur error"
+val mockWeatherModel = com.adurandet.weather.model.Weather(
+    mockId,
+    mockName,
+    mockWeather.description,
+    mockMain.temp,
+    mockWeather.icon.toIconUrl()
+)

@@ -15,3 +15,5 @@ fun String.roundNumber(numberOfDecimal: Int = 1): String {
         NOT_A_NUMBER_RESULT
     }
 }
+
+fun String.isNumberOnly() = matches(Regex("^[0-9]*$"))

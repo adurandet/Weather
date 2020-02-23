@@ -14,7 +14,7 @@ class MainWeatherViewModel(private val weatherRepository: WeatherRepository) : V
 
     private val _triggerSearchLiveData = MutableLiveData<SearchRequest>()
 
-    val weatherLiveData: LiveData<Resource<Weather>> =
+    val weatherLiveData: LiveData<Resource<Weather?>> =
         Transformations.switchMap(_triggerSearchLiveData) {
             weatherRepository.getWeather(it)
         }

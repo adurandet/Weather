@@ -1,23 +1,8 @@
 package com.adurandet.weather.network
 
-data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
-    companion object {
-        fun <T> success(data: T?): Resource<T> {
-            return Resource(Status.SUCCESS, data, null)
-        }
+import com.adurandet.weather.model.CodeError
 
-        fun <T> error(msg: String, data: T? = null): Resource<T> {
-            return Resource(Status.ERROR, data, msg)
-        }
-
-        fun <T> loading(data: T? = null): Resource<T> {
-            return Resource(Status.LOADING, data, null)
-        }
-    }
-}
-
-enum class Status {
-    SUCCESS,
-    ERROR,
-    LOADING
-}
+sealed class Resource<out T>
+data class Success<out T>(val data: T) : Resource<T>()
+data class Failure<out T>(val codeError: CodeError): Resource<T>()
+data class Loading< out T>(val data: T? = null): Resource<T>()

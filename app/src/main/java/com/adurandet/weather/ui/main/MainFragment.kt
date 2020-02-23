@@ -10,10 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
-import com.adurandet.weather.model.Weather
-import com.adurandet.weather.network.ApiHelper
-import com.adurandet.weather.network.Resource
-import com.adurandet.weather.network.Status
+import com.adurandet.weather.model.*
+import com.adurandet.weather.network.*
 import com.adurandet.weather.repository.WeatherRepository
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
@@ -63,14 +61,14 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun processWeatherSearchResult(weatherResource: Resource<Weather>) {
+    private fun processWeatherSearchResult(weatherResource: Resource<Weather?>) {
 
         with(weatherResource) {
-            processWeatherSearchLoading(status == Status.LOADING)
-            when (status) {
-                Status.SUCCESS -> processWeatherSearchSuccess(data)
+            processWeatherSearchLoading(this is Loading)
+            when (this) {
+                is Success -> processWeatherSearchSuccess(data)
 
-                Status.ERROR -> processWeatherSearchError(message)
+                is Failure -> processWeatherSearchError(codeError)
             }
         }
 
@@ -85,7 +83,12 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun processWeatherSearchError(message: String?) {
+    private fun processWeatherSearchError(codeError: CodeError) {
+        val message = when (codeError){
+            is CallError -> codeError.message
+            is BadRequestError -> getString(R.string.wrong_search_request)
+            is DataNotFoundError -> getString(R.string.weather_not_found)
+        }
         showError(message)
     }
 

@@ -3,11 +3,9 @@ package com.adurandet.weather.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.adurandet.weather.model.SearchRequest
-import com.adurandet.weather.model.Weather
-import com.adurandet.weather.network.ApiHelper
+import com.adurandet.weather.model.*
+import com.adurandet.weather.network.*
 import com.adurandet.weather.network.response.GetWeatherResponse
-import com.adurandet.weather.network.Resource
 import com.adurandet.weather.utils.toIconUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,13 +13,14 @@ import retrofit2.Response
 
 class WeatherRepository(private val apiHelper: ApiHelper) {
 
-    private val weatherLiveData = MutableLiveData<Resource<Weather>>()
+    private val weatherLiveData = MutableLiveData<Resource<Weather?>>()
 
     fun getWeather(
         searchRequest: SearchRequest
-    ): LiveData<Resource<Weather>> {
+    ): LiveData<Resource<Weather?>> {
 
-        weatherLiveData.value = Resource.loading(weatherLiveData.value?.data)
+
+        weatherLiveData.value = Loading((weatherLiveData.value as? Success)?.data)
 
         val apiCall = with(searchRequest) {
             when {
@@ -38,12 +37,12 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
         }
 
         apiCall?.run {
-
+            // apiCall ready, trigger the call
             enqueue(object : Callback<GetWeatherResponse> {
 
                 override fun onFailure(call: Call<GetWeatherResponse>, t: Throwable) {
                     Log.e("WeatherRepository", t.message)
-                    triggerGetWeatherError(t.message)
+                    triggerGetWeatherError(CallError(t.message ?: ""))
                 }
 
                 override fun onResponse(
@@ -54,21 +53,34 @@ class WeatherRepository(private val apiHelper: ApiHelper) {
                         "getCityWeather successful: ${response.isSuccessful}"
                     )
 
-                    val weather = response.body()?.toWeather()
-                    weatherLiveData.value = Resource.success(weather)
+                    when (response.code()) {
+                        // More HTTP Code should be manage.
+                        // A class implementing CallBack<T> should be created to manage
+                        // the generic response for every request
+                        404 -> {
+                            triggerGetWeatherError(DataNotFoundError())
+                        }
+
+                        else -> {
+                            val weather = response.body()?.toWeather()
+                            weatherLiveData.value = Success(weather)
+                        }
+                    }
+
 
                 }
             })
 
         } ?: run {
-            weatherLiveData.value = Resource.error("Wrong Search request", null)
+            // No apiCall, return an error
+            triggerGetWeatherError(BadRequestError())
         }
 
         return weatherLiveData
     }
 
-    private fun triggerGetWeatherError(message: String?) {
-        weatherLiveData.value = Resource.error(message ?: "", null)
+    private fun triggerGetWeatherError(codeError: CodeError) {
+        weatherLiveData.value = Failure(codeError)
     }
 }
 

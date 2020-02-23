@@ -4,4 +4,6 @@
     <string name="enter_city_or_zip_code">Enter city name or zip code</string>
     <string name="temperature">%1s %2s</string>
     <string name="celsius">°C</string>
+    <string name="wrong_search_request">Search parameters are not correct. Please enter a correct zip code or city name.</string>
+    <string name="weather_not_found">No result for this research.</string>
 </resources>

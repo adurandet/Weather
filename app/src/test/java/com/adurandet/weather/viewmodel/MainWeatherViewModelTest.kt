@@ -3,6 +3,7 @@ package com.adurandet.weather.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
 import com.adurandet.weather.*
 import com.adurandet.weather.model.DataNotFoundError
 import com.adurandet.weather.model.SearchRequest
@@ -31,7 +32,7 @@ class MainWeatherViewModelTest {
     @Before
     fun setupViewModel() {
         MockitoAnnotations.initMocks(this)
-        mainWeatherViewModel = MainWeatherViewModel(weatherRepository)
+        mainWeatherViewModel = MainWeatherViewModel(weatherRepository, SavedStateHandle())
         mainWeatherViewModel.weatherLiveData.observeForever(observer)
     }
 

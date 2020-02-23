@@ -12,13 +12,12 @@ import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
 import com.adurandet.weather.interactor.LocationInteractor
 import com.adurandet.weather.model.*
-import com.adurandet.weather.network.*
+import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
 import com.adurandet.weather.utils.showError
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.android.synthetic.main.main_fragment.view.*
 
@@ -30,7 +29,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
 
     private val apiHelper = ApiHelper()
     private val weatherRepository = WeatherRepository(apiHelper)
-    private val weatherViewModelFactory = WeatherViewModelProviderFactory(weatherRepository)
+    private val weatherViewModelFactory = WeatherViewModelProviderFactory(weatherRepository, this)
     private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
         weatherViewModelFactory
     }

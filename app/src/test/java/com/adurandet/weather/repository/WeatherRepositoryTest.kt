@@ -2,6 +2,7 @@ package com.adurandet.weather.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.adurandet.weather.*
+import com.adurandet.weather.database.SearchRequestDao
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.network.response.GetWeatherResponse
@@ -12,9 +13,7 @@ import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
+import org.mockito.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.mock.Calls
@@ -24,15 +23,15 @@ class WeatherRepositoryTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val callMocked: Call<GetWeatherResponse> =
-        mock()
+    private val callMocked: Call<GetWeatherResponse> = mock()
     private val apiHelperMocked: ApiHelper = mock()
+    private val searchRequestDao: SearchRequestDao = mock()
     private lateinit var weatherRepository: WeatherRepository
 
     @Before
     fun setupViewModel() {
         MockitoAnnotations.initMocks(this)
-        weatherRepository = WeatherRepository(apiHelperMocked)
+        weatherRepository = WeatherRepository(apiHelperMocked, searchRequestDao)
     }
 
     @Test

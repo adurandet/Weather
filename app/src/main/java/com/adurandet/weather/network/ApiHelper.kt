@@ -8,10 +8,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class ApiHelper {
+class ApiHelper private constructor() {
 
     companion object {
         const val UNITS = "metric"
+
+        @Volatile
+        private var instance: ApiHelper? = null
+
+        fun getIntance() = instance ?: synchronized(this) {
+
+            ApiHelper().also { instance = it }
+
+        }
+
     }
 
     private var apiInterface: ApiInterface

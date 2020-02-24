@@ -25,6 +25,7 @@ class MainWeatherViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val observer: Observer<Resource<Weather?>> = mock()
+    private val searchRequestHistoryRepository: SearchRequestHistoryRepository = mock()
     private val weatherRepository: WeatherRepository = mock()
 
     private lateinit var mainWeatherViewModel: MainWeatherViewModel
@@ -32,12 +33,12 @@ class MainWeatherViewModelTest {
     @Before
     fun setupViewModel() {
         MockitoAnnotations.initMocks(this)
-        mainWeatherViewModel = MainWeatherViewModel(weatherRepository, SavedStateHandle())
+        mainWeatherViewModel = MainWeatherViewModel(weatherRepository, searchRequestHistoryRepository, SavedStateHandle())
         mainWeatherViewModel.weatherLiveData.observeForever(observer)
     }
 
     @Test
-    fun searchWeatherLoadingTest(){
+    fun searchWeatherLoadingTest() {
         val mockWeatherLiveDataLoading = MutableLiveData(Loading<Weather?>())
         val searchRequest = SearchRequest(cityName = mockName)
         Mockito.doReturn(mockWeatherLiveDataLoading).`when`(weatherRepository).getWeather(
@@ -55,7 +56,7 @@ class MainWeatherViewModelTest {
     }
 
     @Test
-    fun searchWeatherFailure(){
+    fun searchWeatherFailure() {
         val codeError = DataNotFoundError()
         val mockWeatherLiveData = MutableLiveData(Failure<Weather?>(codeError))
         val searchRequest = SearchRequest(cityName = mockName)
@@ -74,7 +75,7 @@ class MainWeatherViewModelTest {
     }
 
     @Test
-    fun searchWeatherByCityNameTest(){
+    fun searchWeatherByCityNameTest() {
 
         val mockWeatherLiveData = MutableLiveData(Success<Weather?>(mockWeatherModel))
         val searchRequest = SearchRequest(cityName = mockName)
@@ -93,7 +94,7 @@ class MainWeatherViewModelTest {
     }
 
     @Test
-    fun searchWeatherByZipCodeTest(){
+    fun searchWeatherByZipCodeTest() {
 
         val mockWeatherLiveData = MutableLiveData(Success<Weather?>(mockWeatherModel))
         val searchRequest = SearchRequest(zipCode = mockZipCode)
@@ -112,13 +113,13 @@ class MainWeatherViewModelTest {
     }
 
     @Test
-    fun noSearchWeatherEmptyStringTest(){
+    fun noSearchWeatherEmptyStringTest() {
         mainWeatherViewModel.search("")
         Mockito.verifyZeroInteractions(weatherRepository)
     }
 
     @Test
-    fun searchWeatherByLatLongTest(){
+    fun searchWeatherByLatLongTest() {
 
         val mockWeatherLiveData = MutableLiveData(Success<Weather?>(mockWeatherModel))
         val searchRequest = SearchRequest(lat = mockLat, long = mockLong)

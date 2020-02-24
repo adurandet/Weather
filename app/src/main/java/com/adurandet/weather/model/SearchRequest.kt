@@ -11,6 +11,6 @@ data class SearchRequest @JvmOverloads constructor(
     @ColumnInfo(name = "city_name") var cityName: String = "",
     @Ignore val lat: Double? = null,
     @Ignore val long: Double? = null,
-    @Ignore val zipCode: String? = null,
-    @ColumnInfo(name = "created_at") var createdAt: Long = System.currentTimeMillis()
-)
+    @Ignore val zipCode: String? = null) {
+    @ColumnInfo(name = "created_at") var createdAt: Long = 0L
+}

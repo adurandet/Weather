@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
 import com.adurandet.weather.database.AppDataBase
@@ -24,30 +25,33 @@ import kotlinx.android.synthetic.main.main_fragment.view.*
 
 class MainFragment : Fragment(), LocationInteractor.Callback {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
-    private val apiHelper  by lazy { ApiHelper() }
+    private val apiHelper  by lazy { ApiHelper.getIntance() }
 
     private val searchRequestDao by lazy {
         AppDataBase.getInstance(requireContext()).searchRequestDao()
     }
 
     private val weatherRepository by lazy {
-        WeatherRepository(apiHelper, searchRequestDao)
+        WeatherRepository(apiHelper)
+    }
+
+    private val searchRequestHistoryRepository by lazy {
+        SearchRequestHistoryRepository(searchRequestDao)
     }
 
     private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
-        WeatherViewModelProviderFactory(weatherRepository, this)
+        WeatherViewModelProviderFactory(weatherRepository, searchRequestHistoryRepository, this)
     }
 
     private lateinit var locationInteractor: LocationInteractor
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         val view = inflater.inflate(R.layout.main_fragment, container, false)
+
         initListeners(view)
+
         return view
     }
 
@@ -64,16 +68,16 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
             locationInteractor.verifyLocationPermissionsAndGetLocation()
         }
 
+        view.weather_fragment_show_history_button.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_weather_search_history)
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         activity?.let { locationInteractor = LocationInteractor(it, this) }
-
-        mainWeatherViewModel.searchRequestHistory.observe(this, Observer {
-            // TODO
-        })
 
         mainWeatherViewModel.weatherLiveData.observe(this, Observer {
             processWeatherSearchResult(it)
@@ -129,6 +133,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
             is CallError -> codeError.message
             is BadRequestError -> getString(R.string.wrong_search_request)
             is DataNotFoundError -> getString(R.string.weather_not_found)
+            is DataBaseError -> getString(R.string.data_base_error)
         }
         showError(message)
     }

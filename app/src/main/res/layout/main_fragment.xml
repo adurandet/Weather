@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/standard_padding"
-    tools:context=".ui.main.MainFragment"
-    >
+    tools:context=".ui.main.MainFragment">
 
     <EditText
         android:id="@+id/weather_fragment_search_edt"
@@ -24,34 +23,44 @@
         style="@android:style/Widget.ProgressBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginEnd="@dimen/standard_padding"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/weather_fragment_search_edt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/weather_fragment_search_edt"
-        app:layout_constraintBottom_toBottomOf="@id/weather_fragment_search_edt"
-        />
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/weather_fragment_use_my_location_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/weather_fragment_search_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textAllCaps="false"
-        android:text="@string/user_my_location"
-        />
-
-    <com.adurandet.weather.ui.main.view.WeatherCardView
-        android:id="@+id/weather_fragment_weather_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
+        android:text="@string/user_my_location"
+        android:textAllCaps="false"
         android:layout_marginTop="@dimen/standard_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weather_fragment_use_my_location_button"/>
+        app:layout_constraintTop_toBottomOf="@id/weather_fragment_search_edt" />
+
+    <Button
+        android:id="@+id/weather_fragment_show_history_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_history"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather_fragment_use_my_location_button" />
+
+    <com.adurandet.weather.ui.main.view.WeatherCardView
+        android:id="@+id/weather_fragment_weather_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather_fragment_show_history_button"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

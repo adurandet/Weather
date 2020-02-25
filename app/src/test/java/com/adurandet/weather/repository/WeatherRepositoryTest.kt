@@ -25,13 +25,12 @@ class WeatherRepositoryTest {
 
     private val callMocked: Call<GetWeatherResponse> = mock()
     private val apiHelperMocked: ApiHelper = mock()
-    private val searchRequestDao: SearchRequestDao = mock()
     private lateinit var weatherRepository: WeatherRepository
 
     @Before
-    fun setupViewModel() {
+    fun setup() {
         MockitoAnnotations.initMocks(this)
-        weatherRepository = WeatherRepository(apiHelperMocked, searchRequestDao)
+        weatherRepository = WeatherRepository(apiHelperMocked)
     }
 
     @Test

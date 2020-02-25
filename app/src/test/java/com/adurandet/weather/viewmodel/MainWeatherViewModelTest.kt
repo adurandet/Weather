@@ -31,7 +31,7 @@ class MainWeatherViewModelTest {
     private lateinit var mainWeatherViewModel: MainWeatherViewModel
 
     @Before
-    fun setupViewModel() {
+    fun setup() {
         MockitoAnnotations.initMocks(this)
         mainWeatherViewModel = MainWeatherViewModel(weatherRepository, searchRequestHistoryRepository, SavedStateHandle())
         mainWeatherViewModel.weatherLiveData.observeForever(observer)

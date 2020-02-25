@@ -59,7 +59,7 @@ class MainWeatherViewModelTest {
             searchRequest
         )
 
-        mainWeatherViewModel.search(mockName)
+        mainWeatherViewModel.searchByCityNameOrZipCode(mockName)
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         val captor: ArgumentCaptor<Loading<Weather>> = forClass()
@@ -78,7 +78,7 @@ class MainWeatherViewModelTest {
             searchRequest
         )
 
-        mainWeatherViewModel.search(mockName)
+        mainWeatherViewModel.searchByCityNameOrZipCode(mockName)
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         val captor: ArgumentCaptor<Failure<Weather>> = forClass()
@@ -97,7 +97,7 @@ class MainWeatherViewModelTest {
             searchRequest
         )
 
-        mainWeatherViewModel.search(mockName)
+        mainWeatherViewModel.searchByCityNameOrZipCode(mockName)
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         runBlocking {
@@ -120,7 +120,7 @@ class MainWeatherViewModelTest {
             searchRequest
         )
 
-        mainWeatherViewModel.search(mockZipCode)
+        mainWeatherViewModel.searchByCityNameOrZipCode(mockZipCode)
         runBlocking {
             Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest( id = mockId, cityName = mockName ))
         }
@@ -135,7 +135,7 @@ class MainWeatherViewModelTest {
 
     @Test
     fun noSearchWeatherEmptyStringTest() {
-        mainWeatherViewModel.search("")
+        mainWeatherViewModel.searchByCityNameOrZipCode("")
         Mockito.verifyZeroInteractions(weatherRepository)
     }
 
@@ -148,7 +148,7 @@ class MainWeatherViewModelTest {
             searchRequest
         )
 
-        mainWeatherViewModel.search(LatLng(mockLat, mockLong))
+        mainWeatherViewModel.searchByCityNameOrZipCode(LatLng(mockLat, mockLong))
         runBlocking {
             Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest(id = mockId, cityName = mockName))
         }

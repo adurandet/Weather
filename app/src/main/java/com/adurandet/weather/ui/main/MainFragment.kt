@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
@@ -17,6 +18,7 @@ import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
+import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
 import com.adurandet.weather.utils.showError
 import com.google.android.gms.maps.model.LatLng
@@ -39,8 +41,12 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
         SearchRequestHistoryRepository(searchRequestDao)
     }
 
-    private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
+    private val mainWeatherViewModel: MainWeatherViewModel by activityViewModels {
         WeatherViewModelProviderFactory(weatherRepository, searchRequestHistoryRepository, this)
+    }
+
+    private val sharedViewModel: SharedWeatherViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedWeatherViewModel::class.java)
     }
 
     private lateinit var locationInteractor: LocationInteractor
@@ -59,7 +65,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
 
         view.weather_fragment_search_edt.addTextChangedListener(object : DebounceTextWatcher() {
             override fun afterDebounceTextChanged(s: String) {
-                mainWeatherViewModel.search(s)
+                mainWeatherViewModel.searchByCityNameOrZipCode(s)
             }
         })
 
@@ -83,6 +89,10 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
             processWeatherSearchResult(it)
         })
 
+        sharedViewModel.loadSearchRequestLiveData.observe( this, Observer {
+            mainWeatherViewModel.searchById(it)
+        })
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -95,7 +105,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
     }
 
     override fun onLocationReceived(latLng: LatLng) {
-        mainWeatherViewModel.search(latLng)
+        mainWeatherViewModel.searchByCityNameOrZipCode(latLng)
     }
 
     override fun onLocationPermissionsNotGranted() {

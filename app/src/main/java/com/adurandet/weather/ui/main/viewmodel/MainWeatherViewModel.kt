@@ -65,10 +65,9 @@ class MainWeatherViewModel(
             }
 
         }
-
     }
 
-    fun search(search: String) {
+    fun searchByCityNameOrZipCode(search: String) {
 
         if (search.isEmpty()) return
 
@@ -82,7 +81,7 @@ class MainWeatherViewModel(
 
     }
 
-    fun search(latLong: LatLng) {
+    fun searchByCityNameOrZipCode(latLong: LatLng) {
 
         val searchRequest = SearchRequest(lat = latLong.latitude, long = latLong.longitude)
 
@@ -90,7 +89,7 @@ class MainWeatherViewModel(
 
     }
 
-    private fun searchById(weatherId: String) {
+    fun searchById(weatherId: String) {
 
         val searchRequest = SearchRequest(id = weatherId)
 

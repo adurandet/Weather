@@ -1,15 +1,16 @@
 package com.adurandet.weather.ui.main
 
-import android.graphics.Path
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.NavDirections
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adurandet.weather.R
@@ -19,6 +20,7 @@ import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.adapter.WeatherSearchHistoryAdapter
 import com.adurandet.weather.ui.main.viewmodel.SearchRequestHistoryViewModel
 import com.adurandet.weather.ui.main.viewmodel.SearchRequestHistoryViewModelFactory
+import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
 import com.adurandet.weather.utils.showError
 import kotlinx.android.synthetic.main.search_request_history_fragment.*
 import kotlinx.android.synthetic.main.search_request_history_fragment.view.*
@@ -37,6 +39,10 @@ class SearchRequestHistoryFragment : Fragment() {
         SearchRequestHistoryViewModelFactory(searchRequestHistoryRepository, this)
     }
 
+    private val sharedViewModel: SharedWeatherViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedWeatherViewModel::class.java)
+    }
+
     private lateinit var searchHistoryAdapter: WeatherSearchHistoryAdapter
 
     override fun onCreateView(
@@ -53,8 +59,9 @@ class SearchRequestHistoryFragment : Fragment() {
 
     private fun initViews(view: View) {
 
-        searchHistoryAdapter = WeatherSearchHistoryAdapter {
+        searchHistoryAdapter = WeatherSearchHistoryAdapter { weatherId ->
             findNavController().navigateUp()
+            sharedViewModel.setSearchRequestToLoad(weatherId)
         }
 
         view.history_fragment_search_request_rv.apply {

@@ -26,8 +26,18 @@ interactor	0% (0/3)	0% (0/7)	0% (0/27)
 model	75% (6/8)	77% (14/18)	77% (14/18)
 network	66% (4/6)	61% (11/18)	27% (11/40)
 repository	100% (12/12)	100% (19/19)	93% (62/66)
-ui	22% (8/35)	17% (13/73)	20% (45/222)
+ui	23% (9/38)	20% (16/78)	21% (49/232)
 utils	25% (1/4)	57% (4/7)	41% (7/17)
 BuildConfig	0% (0/1)	0% (0/1)	0% (0/1)
 MainActivity	0% (0/3)	0% (0/5)	0% (0/19)
+
+
+
+#Improvments
+
+Use Dependency injection for ApiHelper, Repositories, and DAO
+
+Add UI tests and Integration tests
+
+Add Database tests
 

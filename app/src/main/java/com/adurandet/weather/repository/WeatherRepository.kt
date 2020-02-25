@@ -3,7 +3,6 @@ package com.adurandet.weather.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.adurandet.weather.database.SearchRequestDao
 import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.network.response.GetWeatherResponse

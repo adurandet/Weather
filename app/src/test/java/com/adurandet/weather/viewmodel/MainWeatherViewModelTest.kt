@@ -11,10 +11,13 @@ import com.adurandet.weather.model.Weather
 import com.adurandet.weather.repository.*
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.google.android.gms.maps.model.LatLng
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.*
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -33,8 +36,19 @@ class MainWeatherViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        mainWeatherViewModel = MainWeatherViewModel(weatherRepository, searchRequestHistoryRepository, SavedStateHandle())
-        mainWeatherViewModel.weatherLiveData.observeForever(observer)
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        runBlocking {
+            val deferred = CompletableDeferred<Resource<List<SearchRequest>?>>()
+            Mockito.doReturn(deferred).`when`(searchRequestHistoryRepository).getSearchRequestHistoryAsync()
+
+            mainWeatherViewModel = MainWeatherViewModel(weatherRepository, searchRequestHistoryRepository, SavedStateHandle())
+            mainWeatherViewModel.weatherLiveData.observeForever(observer)
+        }
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -86,6 +100,10 @@ class MainWeatherViewModelTest {
         mainWeatherViewModel.search(mockName)
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
+        runBlocking {
+            Mockito.verify(searchRequestHistoryRepository).insert(searchRequest.apply { id = mockId })
+        }
+
         val captor: ArgumentCaptor<Success<Weather>> = forClass()
         captor.run {
             Mockito.verify(observer).onChanged(capture())
@@ -103,6 +121,9 @@ class MainWeatherViewModelTest {
         )
 
         mainWeatherViewModel.search(mockZipCode)
+        runBlocking {
+            Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest( id = mockId, cityName = mockName ))
+        }
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         val captor: ArgumentCaptor<Success<Weather>> = forClass()
@@ -128,6 +149,9 @@ class MainWeatherViewModelTest {
         )
 
         mainWeatherViewModel.search(LatLng(mockLat, mockLong))
+        runBlocking {
+            Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest(id = mockId, cityName = mockName))
+        }
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)
         val captor: ArgumentCaptor<Success<Weather>> = forClass()

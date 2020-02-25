@@ -6,24 +6,21 @@ import com.adurandet.weather.forClass
 import com.adurandet.weather.mock
 import com.adurandet.weather.mockId
 import com.adurandet.weather.model.SearchRequest
-import com.adurandet.weather.repository.Loading
 import com.adurandet.weather.repository.Resource
 import com.adurandet.weather.repository.SearchRequestHistoryRepository
 import com.adurandet.weather.repository.Success
 import com.adurandet.weather.ui.main.viewmodel.SearchRequestHistoryViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.Mockito.atLeast
 import org.mockito.MockitoAnnotations
 
 class SearchRequestHistoryViewModelTest {
-
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -36,13 +33,12 @@ class SearchRequestHistoryViewModelTest {
     @Before
     fun setupUp() {
         MockitoAnnotations.initMocks(this)
-        Dispatchers.setMain(mainThreadSurrogate)
+        Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        mainThreadSurrogate.close()
     }
 
     @Test

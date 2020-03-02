@@ -13,5 +13,4 @@
         tools:text="Search name"
         />
 
-
 </androidx.cardview.widget.CardView>

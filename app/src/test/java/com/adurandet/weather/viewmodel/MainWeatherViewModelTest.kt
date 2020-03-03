@@ -18,6 +18,9 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -31,23 +34,32 @@ class MainWeatherViewModelTest {
     private val searchRequestHistoryRepository: SearchRequestHistoryRepository = mock()
     private val weatherRepository: WeatherRepository = mock()
 
+    private val modules = module {
+        single { searchRequestHistoryRepository }
+        single { weatherRepository }
+    }
+
     private lateinit var mainWeatherViewModel: MainWeatherViewModel
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
+
+        startKoin { modules(modules) }
+
         Dispatchers.setMain(TestCoroutineDispatcher())
         runBlocking {
             val deferred = CompletableDeferred<Resource<List<SearchRequest>?>>()
             Mockito.doReturn(deferred).`when`(searchRequestHistoryRepository).getSearchRequestHistoryAsync()
 
-            mainWeatherViewModel = MainWeatherViewModel(weatherRepository, searchRequestHistoryRepository, SavedStateHandle())
+            mainWeatherViewModel = MainWeatherViewModel(SavedStateHandle())
             mainWeatherViewModel.weatherLiveData.observeForever(observer)
         }
     }
 
     @After
     fun tearDown() {
+        stopKoin()
         Dispatchers.resetMain()
     }
 
@@ -122,7 +134,7 @@ class MainWeatherViewModelTest {
 
         mainWeatherViewModel.searchByCityNameOrZipCode(mockZipCode)
         runBlocking {
-            Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest( id = mockId, cityName = mockName ))
+            Mockito.verify(searchRequestHistoryRepository).insert(SearchRequest(id = mockId, cityName = mockName))
         }
 
         Mockito.verify(weatherRepository).getWeather(searchRequest)

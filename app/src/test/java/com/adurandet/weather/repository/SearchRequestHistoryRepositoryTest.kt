@@ -8,9 +8,13 @@ import com.adurandet.weather.mockName
 import com.adurandet.weather.model.SearchRequest
 import junit.framework.Assert
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
@@ -20,12 +24,26 @@ class SearchRequestHistoryRepositoryTest {
     val rule = InstantTaskExecutorRule()
 
     private val searchRequestDao: SearchRequestDao = mock()
+
+    private val modules = module {
+        single { searchRequestDao }
+    }
+
     private lateinit var searchRequestHistoryRepository: SearchRequestHistoryRepository
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        searchRequestHistoryRepository = SearchRequestHistoryRepository(searchRequestDao)
+
+        startKoin { modules(modules) }
+
+        searchRequestHistoryRepository = SearchRequestHistoryRepository()
+    }
+
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

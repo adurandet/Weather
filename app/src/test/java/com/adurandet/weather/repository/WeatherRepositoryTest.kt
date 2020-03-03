@@ -10,9 +10,13 @@ import com.adurandet.weather.mock
 import com.adurandet.weather.utils.toIconUrl
 import junit.framework.Assert
 import okhttp3.ResponseBody
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.mockito.*
 import retrofit2.Call
 import retrofit2.Response
@@ -25,16 +29,28 @@ class WeatherRepositoryTest {
 
     private val callMocked: Call<GetWeatherResponse> = mock()
     private val apiHelperMocked: ApiHelper = mock()
+    private val modules = module {
+        single { apiHelperMocked }
+    }
+
     private lateinit var weatherRepository: WeatherRepository
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        weatherRepository = WeatherRepository(apiHelperMocked)
+
+        startKoin { modules(modules) }
+
+        weatherRepository = WeatherRepository()
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test
-    fun getWeatherWithIdTest(){
+    fun getWeatherWithIdTest() {
 
         val call = Calls.response(mockGetWeatherResponse)
         Mockito.doReturn(call).`when`(apiHelperMocked).getWeatherById(mockId)
@@ -45,12 +61,12 @@ class WeatherRepositoryTest {
         val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherById(mockId)
-        Assert.assertEquals( successData, weatherLiveData.value)
+        Assert.assertEquals(successData, weatherLiveData.value)
 
     }
 
     @Test
-    fun getWeatherWithLatLongTest(){
+    fun getWeatherWithLatLongTest() {
 
         val call = Calls.response(mockGetWeatherResponse)
         Mockito.doReturn(call).`when`(apiHelperMocked).getWeatherByLatLong(mockLat, mockLong)
@@ -61,12 +77,12 @@ class WeatherRepositoryTest {
         val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherByLatLong(mockLat, mockLong)
-        Assert.assertEquals( successData, weatherLiveData.value)
+        Assert.assertEquals(successData, weatherLiveData.value)
 
     }
 
     @Test
-    fun getWeatherWithZipCodeTest(){
+    fun getWeatherWithZipCodeTest() {
 
         val call = Calls.response(mockGetWeatherResponse)
         Mockito.doReturn(call).`when`(apiHelperMocked).getWeatherByZipCode(mockZipCode)
@@ -77,12 +93,12 @@ class WeatherRepositoryTest {
         val successData = Success(mockWeatherModel)
 
         Mockito.verify(apiHelperMocked).getWeatherByZipCode(mockZipCode)
-        Assert.assertEquals( successData, weatherLiveData.value)
+        Assert.assertEquals(successData, weatherLiveData.value)
 
     }
 
     @Test
-    fun getWeatherWithCityNameTest(){
+    fun getWeatherWithCityNameTest() {
 
         val call = Calls.response(mockGetWeatherResponse)
         Mockito.doReturn(call).`when`(apiHelperMocked).getWeatherByCityName(mockName)
@@ -100,12 +116,12 @@ class WeatherRepositoryTest {
         val successData = Success(weather)
 
         Mockito.verify(apiHelperMocked).getWeatherByCityName(mockName)
-        Assert.assertEquals( successData, weatherLiveData.value)
+        Assert.assertEquals(successData, weatherLiveData.value)
 
     }
 
     @Test
-    fun getWeatherLoading(){
+    fun getWeatherLoading() {
 
         Mockito.doReturn(callMocked).`when`(apiHelperMocked).getWeatherById(mockId)
         Mockito.doNothing().`when`(callMocked).enqueue(ArgumentMatchers.any())
@@ -120,7 +136,7 @@ class WeatherRepositoryTest {
     }
 
     @Test
-    fun getWeatherServerFailureTest(){
+    fun getWeatherServerFailureTest() {
 
         val call = Calls.failure<GetWeatherResponse>(Throwable(mockCallErrorMessage, null))
         Mockito.doReturn(call).`when`(apiHelperMocked).getWeatherById(mockId)
@@ -129,26 +145,26 @@ class WeatherRepositoryTest {
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
         Mockito.verify(apiHelperMocked).getWeatherById(mockId)
-        assert( weatherLiveData.value is Failure)
-        assert( (weatherLiveData.value as Failure).codeError is CallError)
-        Assert.assertEquals( mockCallErrorMessage , (weatherLiveData.value as Failure).codeError.message)
+        assert(weatherLiveData.value is Failure)
+        assert((weatherLiveData.value as Failure).codeError is CallError)
+        Assert.assertEquals(mockCallErrorMessage, (weatherLiveData.value as Failure).codeError.message)
 
     }
 
     @Test
-    fun getWeatherWrongSearchRequestFailureTest(){
+    fun getWeatherWrongSearchRequestFailureTest() {
 
         val searchRequest = SearchRequest()
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
         Mockito.verifyZeroInteractions(apiHelperMocked)
-        assert( weatherLiveData.value is Failure)
-        assert( (weatherLiveData.value as Failure).codeError is BadRequestError)
+        assert(weatherLiveData.value is Failure)
+        assert((weatherLiveData.value as Failure).codeError is BadRequestError)
 
     }
 
     @Test
-    fun getWeatherDataNotFoundTest(){
+    fun getWeatherDataNotFoundTest() {
 
         val responseBody = ResponseBody.create(null, "")
         val response = Response.error<GetWeatherResponse>(404, responseBody)
@@ -160,8 +176,8 @@ class WeatherRepositoryTest {
         val weatherLiveData = weatherRepository.getWeather(searchRequest)
 
         Mockito.verify(apiHelperMocked).getWeatherById(mockId)
-        assert( weatherLiveData.value is Failure)
-        assert( (weatherLiveData.value as Failure).codeError is DataNotFoundError)
+        assert(weatherLiveData.value is Failure)
+        assert((weatherLiveData.value as Failure).codeError is DataNotFoundError)
 
     }
 

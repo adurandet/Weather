@@ -9,17 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adurandet.weather.R
-import com.adurandet.weather.database.AppDataBase
 import com.adurandet.weather.model.*
-import com.adurandet.weather.repository.*
+import com.adurandet.weather.repository.Failure
+import com.adurandet.weather.repository.Loading
+import com.adurandet.weather.repository.Resource
+import com.adurandet.weather.repository.Success
 import com.adurandet.weather.ui.main.adapter.WeatherSearchHistoryAdapter
 import com.adurandet.weather.ui.main.viewmodel.SearchRequestHistoryViewModel
-import com.adurandet.weather.ui.main.viewmodel.SearchRequestHistoryViewModelFactory
 import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
 import com.adurandet.weather.utils.showError
 import kotlinx.android.synthetic.main.search_request_history_fragment.*
@@ -27,21 +26,9 @@ import kotlinx.android.synthetic.main.search_request_history_fragment.view.*
 
 class SearchRequestHistoryFragment : Fragment() {
 
-    private val searchRequestDao by lazy {
-        AppDataBase.getInstance(requireContext()).searchRequestDao()
-    }
+    private val searchRequestHistory: SearchRequestHistoryViewModel by viewModels()
 
-    private val searchRequestHistoryRepository by lazy {
-        SearchRequestHistoryRepository(searchRequestDao)
-    }
-
-    private val searchRequestHistory: SearchRequestHistoryViewModel by viewModels {
-        SearchRequestHistoryViewModelFactory(searchRequestHistoryRepository, this)
-    }
-
-    private val sharedViewModel: SharedWeatherViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedWeatherViewModel::class.java)
-    }
+    private val sharedViewModel: SharedWeatherViewModel by activityViewModels()
 
     private lateinit var searchHistoryAdapter: WeatherSearchHistoryAdapter
 

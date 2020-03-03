@@ -7,8 +7,12 @@ import com.adurandet.weather.model.DataBaseError
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.repository.*
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class SearchRequestHistoryViewModel(searchRequestHistoryRepository: SearchRequestHistoryRepository) : ViewModel() {
+class SearchRequestHistoryViewModel : ViewModel(), KoinComponent {
+
+    private val searchRequestHistoryRepository: SearchRequestHistoryRepository by inject()
 
     val searchRequestHistory: MutableLiveData<Resource<List<SearchRequest>>> = MutableLiveData()
 

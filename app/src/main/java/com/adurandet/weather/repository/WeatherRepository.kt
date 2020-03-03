@@ -7,11 +7,15 @@ import com.adurandet.weather.model.*
 import com.adurandet.weather.network.ApiHelper
 import com.adurandet.weather.network.response.GetWeatherResponse
 import com.adurandet.weather.utils.toIconUrl
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WeatherRepository(private val apiHelper: ApiHelper) {
+class WeatherRepository: KoinComponent {
+
+    private val apiHelper: ApiHelper by inject()
 
     private val weatherLiveData = MutableLiveData<Resource<Weather?>>()
 

@@ -15,6 +15,9 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.Mockito.atLeast
@@ -28,16 +31,24 @@ class SearchRequestHistoryViewModelTest {
     private val observer: Observer<Resource<List<SearchRequest>?>> = mock()
     private val searchRequestHistoryRepository: SearchRequestHistoryRepository = mock()
 
+    private val modules = module {
+        single {searchRequestHistoryRepository }
+    }
+
     private lateinit var searchRequestViewModel: SearchRequestHistoryViewModel
 
     @Before
     fun setupUp() {
         MockitoAnnotations.initMocks(this)
+
+        startKoin { modules(modules) }
+
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
     @After
     fun tearDown() {
+        stopKoin()
         Dispatchers.resetMain()
     }
 
@@ -51,7 +62,7 @@ class SearchRequestHistoryViewModelTest {
                 .getSearchRequestHistoryAsync()
 
             runBlocking {
-                searchRequestViewModel = SearchRequestHistoryViewModel(searchRequestHistoryRepository)
+                searchRequestViewModel = SearchRequestHistoryViewModel()
                 searchRequestViewModel.searchRequestHistory.observeForever(observer)
             }
 

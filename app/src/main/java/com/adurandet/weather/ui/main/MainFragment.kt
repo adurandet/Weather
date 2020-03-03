@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.adurandet.weather.R
 import com.adurandet.weather.component.DebounceTextWatcher
-import com.adurandet.weather.database.AppDataBase
 import com.adurandet.weather.interactor.LocationInteractor
 import com.adurandet.weather.model.*
-import com.adurandet.weather.network.ApiHelper
-import com.adurandet.weather.repository.*
+import com.adurandet.weather.repository.Failure
+import com.adurandet.weather.repository.Loading
+import com.adurandet.weather.repository.Resource
+import com.adurandet.weather.repository.Success
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
 import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
-import com.adurandet.weather.ui.main.viewmodel.WeatherViewModelProviderFactory
 import com.adurandet.weather.utils.showError
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.main_fragment.*
@@ -27,27 +27,9 @@ import kotlinx.android.synthetic.main.main_fragment.view.*
 
 class MainFragment : Fragment(), LocationInteractor.Callback {
 
-    private val apiHelper  by lazy { ApiHelper.getIntance() }
+    private val mainWeatherViewModel: MainWeatherViewModel by viewModels()
 
-    private val searchRequestDao by lazy {
-        AppDataBase.getInstance(requireContext()).searchRequestDao()
-    }
-
-    private val weatherRepository by lazy {
-        WeatherRepository(apiHelper)
-    }
-
-    private val searchRequestHistoryRepository by lazy {
-        SearchRequestHistoryRepository(searchRequestDao)
-    }
-
-    private val mainWeatherViewModel: MainWeatherViewModel by activityViewModels {
-        WeatherViewModelProviderFactory(weatherRepository, searchRequestHistoryRepository, this)
-    }
-
-    private val sharedViewModel: SharedWeatherViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedWeatherViewModel::class.java)
-    }
+    private val sharedViewModel: SharedWeatherViewModel by activityViewModels()
 
     private lateinit var locationInteractor: LocationInteractor
 

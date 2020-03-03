@@ -14,7 +14,7 @@ Interactors allow to split and isolate common logic and behaviour.
 I have used 2 repositories for Weather and Search Request History logic. This allow each class to get its own purpose as well as having smaller class.
 
 #Why transformation and live data
-Transformation allow to carry information across the observer's lifecycle. This allow
+Transformation allow to carry information across the observer's lifecycle. 
 
 Why Retrofit
 Most popular way and fastest way to implement REST API communication
@@ -30,23 +30,11 @@ Fresco is the new comer and seems to offer better memory management and more fun
 Why Room
 Room is the go to database/persistent storage. The setup and usage of Room is really simple and convenient
 
-#Code Coverage result
-component	0% (0/2)	0% (0/7)	0% (0/17)
-database	0% (0/10)	0% (0/42)	0% (0/217)
-interactor	0% (0/3)	0% (0/7)	0% (0/27)
-model	75% (6/8)	77% (14/18)	77% (14/18)
-network	66% (4/6)	61% (11/18)	27% (11/40)
-repository	100% (12/12)	100% (19/19)	93% (62/66)
-ui	23% (9/38)	20% (16/78)	21% (49/232)
-utils	25% (1/4)	57% (4/7)	41% (7/17)
-BuildConfig	0% (0/1)	0% (0/1)	0% (0/1)
-MainActivity	0% (0/3)	0% (0/5)	0% (0/19)
-
+Why Koin
+Use Koin has Dependency Injection. It is lighter and faster to setup compare to Dagger2
 
 
 #Improvments
-
-Use Dependency injection for ApiHelper, Repositories, and DAO
 
 Add UI tests and Integration tests
 

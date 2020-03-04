@@ -1,9 +1,6 @@
 package com.adurandet.weather.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.adurandet.weather.model.SearchRequest
 
 @Dao
@@ -14,5 +11,8 @@ interface SearchRequestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchRequest: SearchRequest)
+
+    @Query("DELETE FROM search_request WHERE id = :id")
+    fun delete(id: String)
 
 }

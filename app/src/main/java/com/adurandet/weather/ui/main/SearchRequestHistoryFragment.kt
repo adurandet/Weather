@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.adurandet.weather.R
+import com.adurandet.weather.component.SwipeToDeleteCallback
 import com.adurandet.weather.database.AppDataBase
 import com.adurandet.weather.model.*
 import com.adurandet.weather.repository.*
@@ -35,7 +36,7 @@ class SearchRequestHistoryFragment : Fragment() {
         SearchRequestHistoryRepository(searchRequestDao)
     }
 
-    private val searchRequestHistory: SearchRequestHistoryViewModel by viewModels {
+    private val searchRequestHistoryViewModel: SearchRequestHistoryViewModel by viewModels {
         SearchRequestHistoryViewModelFactory(searchRequestHistoryRepository, this)
     }
 
@@ -63,11 +64,21 @@ class SearchRequestHistoryFragment : Fragment() {
             findNavController().navigateUp()
             sharedViewModel.setSearchRequestToLoad(weatherId)
         }
+        
+        val swipeHandler = object : SwipeToDeleteCallback(view.context) {
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val searchRequest = searchHistoryAdapter.currentList[viewHolder.adapterPosition]
+                searchRequestHistoryViewModel.onDeleteItemClicked(searchRequest.id)
+            }
+
+        }
 
         view.history_fragment_search_request_rv.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = searchHistoryAdapter
+            ItemTouchHelper(swipeHandler).attachToRecyclerView(this)
         }
 
     }
@@ -75,7 +86,7 @@ class SearchRequestHistoryFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        searchRequestHistory.searchRequestHistory.observe(this, Observer {
+        searchRequestHistoryViewModel.searchRequestHistory.observe(this, Observer {
             processSearchRequestHistoryResult(it)
 
         })

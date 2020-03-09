@@ -63,7 +63,7 @@ class SearchRequestHistoryViewModelTest {
 
             runBlocking {
                 searchRequestViewModel = SearchRequestHistoryViewModel()
-                searchRequestViewModel.searchRequestHistory.observeForever(observer)
+                searchRequestViewModel.searchRequestHistoryLiveData.observeForever(observer)
             }
 
             Mockito.verify(searchRequestHistoryRepository).getSearchRequestHistoryAsync()

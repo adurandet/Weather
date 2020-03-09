@@ -10,12 +10,19 @@ class SearchRequestHistoryRepository: KoinComponent {
 
     private val searchRequestDao: SearchRequestDao by inject()
 
-    suspend fun getSearchRequestHistoryAsync(): Deferred<List<SearchRequest>> = withContext(Dispatchers.IO) { async { searchRequestDao.getAll() } }
+    suspend fun getSearchRequestHistoryAsync(): Deferred<List<SearchRequest>> =
+        withContext(Dispatchers.IO) { async { searchRequestDao.getAll() } }
 
     suspend fun insert(searchRequest: SearchRequest): Job = withContext(Dispatchers.IO) {
         launch {
             searchRequest.createdAt = System.currentTimeMillis()
             searchRequestDao.insert(searchRequest)
+        }
+    }
+
+    suspend fun delete(id: String): Job = withContext(Dispatchers.IO) {
+        launch {
+            searchRequestDao.delete(id)
         }
     }
 }

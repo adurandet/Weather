@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.adurandet.weather.model.DataBaseError
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.repository.*
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -14,27 +15,62 @@ class SearchRequestHistoryViewModel : ViewModel(), KoinComponent {
 
     private val searchRequestHistoryRepository: SearchRequestHistoryRepository by inject()
 
-    val searchRequestHistory: MutableLiveData<Resource<List<SearchRequest>>> = MutableLiveData()
+    val searchRequestHistoryLiveData: MutableLiveData<Resource<List<SearchRequest>>> = MutableLiveData()
+
+//    val searchRequestHistoryAlternative: LiveData<out Resource<List<SearchRequest>>> = liveData {
+//
+//        emit(Loading<List<SearchRequest>>())
+//
+//        try {
+//
+//            val searchRequests = searchRequestHistoryRepository.getSearchRequestHistoryAsync().await()
+//            emit(Success(searchRequests))
+//
+//        } catch (e: Exception) {
+//
+//            emit(Failure(DataBaseError()))
+//
+//        }
+//
+//    }
 
     init {
         viewModelScope.launch {
 
-            searchRequestHistory.value = Loading()
+            searchRequestHistoryLiveData.value = Loading()
 
-            try {
-
-                val searchRequest = searchRequestHistoryRepository.getSearchRequestHistoryAsync().await()
-
-                searchRequestHistory.value = Success(searchRequest)
-
-            }catch (e: Exception){
-
-                searchRequestHistory.value = Failure(DataBaseError())
-
-            }
+            loadSearchRequestHistory()
 
         }
-
     }
+
+    fun onDeleteItemClicked(id: String) {
+
+        searchRequestHistoryLiveData.value = Loading((searchRequestHistoryLiveData.value as? Success)?.data)
+
+        viewModelScope.launch {
+            deleteSearchRequestHistoryAsync(id).await()
+
+            loadSearchRequestHistory()
+        }
+    }
+
+    private suspend fun loadSearchRequestHistory() {
+        try {
+
+            val searchRequest =
+                searchRequestHistoryRepository.getSearchRequestHistoryAsync().await()
+
+            searchRequestHistoryLiveData.value = Success(searchRequest)
+
+        } catch (e: Exception) {
+
+            searchRequestHistoryLiveData.value = Failure(DataBaseError())
+
+        }
+    }
+
+    private suspend fun deleteSearchRequestHistoryAsync(id: String) =
+        viewModelScope.async { searchRequestHistoryRepository.delete(id) }
 
 }

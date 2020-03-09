@@ -10,7 +10,9 @@ import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.utils.inflate
 import kotlinx.android.synthetic.main.list_item_search_request_layout.view.*
 
-class WeatherSearchHistoryAdapter(private val onItemClickListener: (itemId: String) -> Unit) :
+class WeatherSearchHistoryAdapter(
+    private val onItemClickListener: (itemId: String) -> Unit
+) :
     ListAdapter<SearchRequest, WeatherSearchHistoryAdapter.SearchRequestViewHolder>(DiffUtilLaunchItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchRequestViewHolder {
@@ -22,7 +24,9 @@ class WeatherSearchHistoryAdapter(private val onItemClickListener: (itemId: Stri
         holder.bind(getItem(position))
     }
 
-    class SearchRequestViewHolder(itemView: View, private val onItemClickListener: (itemId: String) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class SearchRequestViewHolder(itemView: View,
+                                  private val onItemClickListener: (itemId: String) -> Unit
+                                  ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: SearchRequest) {
             itemView.list_item_search_request_name.text = item.cityName

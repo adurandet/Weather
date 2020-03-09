@@ -29,19 +29,13 @@ class WeatherRepositoryTest {
 
     private val callMocked: Call<GetWeatherResponse> = mock()
     private val apiHelperMocked: ApiHelper = mock()
-    private val modules = module {
-        single { apiHelperMocked }
-    }
 
     private lateinit var weatherRepository: WeatherRepository
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-
-        startKoin { modules(modules) }
-
-        weatherRepository = WeatherRepository()
+        weatherRepository = WeatherRepository(apiHelperMocked)
     }
 
     @After

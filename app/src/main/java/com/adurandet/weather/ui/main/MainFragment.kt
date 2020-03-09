@@ -19,6 +19,7 @@ import com.adurandet.weather.repository.Loading
 import com.adurandet.weather.repository.Resource
 import com.adurandet.weather.repository.Success
 import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModel
+import com.adurandet.weather.ui.main.viewmodel.MainWeatherViewModelFactory
 import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
 import com.adurandet.weather.utils.showError
 import com.google.android.gms.maps.model.LatLng
@@ -27,7 +28,9 @@ import kotlinx.android.synthetic.main.main_fragment.view.*
 
 class MainFragment : Fragment(), LocationInteractor.Callback {
 
-    private val mainWeatherViewModel: MainWeatherViewModel by viewModels()
+    private val mainWeatherViewModel: MainWeatherViewModel by viewModels {
+        MainWeatherViewModelFactory(this)
+    }
 
     private val sharedViewModel: SharedWeatherViewModel by activityViewModels()
 

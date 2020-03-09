@@ -9,11 +9,11 @@ import com.adurandet.weather.repository.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.java.KoinJavaComponent.get
 
-class SearchRequestHistoryViewModel : ViewModel(), KoinComponent {
-
-    private val searchRequestHistoryRepository: SearchRequestHistoryRepository by inject()
+class SearchRequestHistoryViewModel(
+    private val searchRequestHistoryRepository: SearchRequestHistoryRepository = get(SearchRequestHistoryRepository::class.java)
+) : ViewModel(), KoinComponent {
 
     val searchRequestHistoryLiveData: MutableLiveData<Resource<List<SearchRequest>>> = MutableLiveData()
 

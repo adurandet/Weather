@@ -52,7 +52,7 @@ class MainWeatherViewModelTest {
             val deferred = CompletableDeferred<Resource<List<SearchRequest>?>>()
             Mockito.doReturn(deferred).`when`(searchRequestHistoryRepository).getSearchRequestHistoryAsync()
 
-            mainWeatherViewModel = MainWeatherViewModel(SavedStateHandle())
+            mainWeatherViewModel = MainWeatherViewModel(state = SavedStateHandle())
             mainWeatherViewModel.weatherLiveData.observeForever(observer)
         }
     }

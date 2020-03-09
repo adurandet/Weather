@@ -1,5 +1,6 @@
 package com.adurandet.weather.ui.main.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.model.Weather
@@ -11,17 +12,17 @@ import com.adurandet.weather.utils.isNumberOnly
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.java.KoinJavaComponent.get
 
-class MainWeatherViewModel( private val state: SavedStateHandle ) : ViewModel(), KoinComponent {
+class MainWeatherViewModel(
+    private val weatherRepository: WeatherRepository = get(WeatherRepository::class.java),
+    private val searchRequestHistoryRepository: SearchRequestHistoryRepository = get(SearchRequestHistoryRepository::class.java),
+    private val state: SavedStateHandle
+) : ViewModel(), KoinComponent {
 
     companion object {
         const val LAST_WEATHER_ID = "LAST_WEATHER_ID"
     }
-
-    private val weatherRepository: WeatherRepository by inject()
-
-    private val searchRequestHistoryRepository: SearchRequestHistoryRepository by inject()
 
     private val _triggerSearchLiveData = MutableLiveData<SearchRequest>()
 
@@ -48,6 +49,7 @@ class MainWeatherViewModel( private val state: SavedStateHandle ) : ViewModel(),
     init {
 
         val lastSearchId = state[LAST_WEATHER_ID] ?: ""
+        Log.d("lastSearchId", lastSearchId)
 
         if (lastSearchId.isNotEmpty()) {
             searchById(lastSearchId)

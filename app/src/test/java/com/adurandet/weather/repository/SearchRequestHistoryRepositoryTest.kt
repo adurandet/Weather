@@ -15,6 +15,7 @@ import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.get
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
@@ -25,19 +26,12 @@ class SearchRequestHistoryRepositoryTest {
 
     private val searchRequestDao: SearchRequestDao = mock()
 
-    private val modules = module {
-        single { searchRequestDao }
-    }
-
     private lateinit var searchRequestHistoryRepository: SearchRequestHistoryRepository
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-
-        startKoin { modules(modules) }
-
-        searchRequestHistoryRepository = SearchRequestHistoryRepository()
+        searchRequestHistoryRepository = SearchRequestHistoryRepository(searchRequestDao)
     }
 
 

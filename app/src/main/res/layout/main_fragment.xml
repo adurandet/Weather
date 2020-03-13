@@ -13,6 +13,7 @@
         style="@style/SearchEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:hint="@string/enter_city_or_zip_code"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

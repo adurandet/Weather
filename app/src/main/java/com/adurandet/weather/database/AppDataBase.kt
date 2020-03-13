@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.utils.DATABASE_NAME
 
-@Database(entities = [SearchRequest::class], version = 2 )
+@Database(entities = [SearchRequest::class], version = 2, exportSchema = false )
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun searchRequestDao(): SearchRequestDao

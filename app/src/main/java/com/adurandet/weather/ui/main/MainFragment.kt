@@ -85,7 +85,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            LOCATION_REQUEST_CODE -> locationInteractor.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            LOCATION_REQUEST_CODE -> locationInteractor.onRequestPermissionsResult(grantResults)
         }
 
     }

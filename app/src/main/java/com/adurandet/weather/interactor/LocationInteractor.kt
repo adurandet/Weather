@@ -24,7 +24,7 @@ class LocationInteractor(private val fragment: Fragment,
         getLocation()
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(grantResults: IntArray) {
         if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             callback.onLocationPermissionsNotGranted()
             return

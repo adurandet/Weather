@@ -7,8 +7,6 @@ import com.adurandet.weather.utils.toIconUrl
 
 const val mockCallErrorMessage = "call error message"
 
-const val mockId = "123"
-
 const val mockName = "San Francisco"
 
 const val mockLat = 37.7749
@@ -24,14 +22,13 @@ val mockWeather = Weather(
 val mockMain = Main("13.75")
 
 val mockGetWeatherResponse = GetWeatherResponse(
-    mockId,
+    "",
     mockName,
     listOf(mockWeather),
     mockMain
 )
 
 val mockWeatherModel = com.adurandet.weather.model.Weather(
-    mockId,
     mockName,
     mockWeather.description,
     mockMain.temp,

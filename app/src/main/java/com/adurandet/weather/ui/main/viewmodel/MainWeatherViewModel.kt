@@ -21,7 +21,7 @@ class MainWeatherViewModel(
 ) : ViewModel(), KoinComponent {
 
     companion object {
-        const val LAST_WEATHER_ID = "LAST_WEATHER_ID"
+        const val LAST_WEATHER_CITY_NAME = "LAST_WEATHER_ID"
     }
 
     private val _triggerSearchLiveData = MutableLiveData<SearchRequest>()
@@ -36,10 +36,10 @@ class MainWeatherViewModel(
             weatherResponse.data?.let {
 
                 viewModelScope.launch {
-                    searchRequestHistoryRepository.insert(SearchRequest(id = it.id, cityName = it.name))
+                    searchRequestHistoryRepository.insert(SearchRequest(cityName = it.name))
                 }
 
-                state.set(LAST_WEATHER_ID, it.id)
+                state.set(LAST_WEATHER_CITY_NAME, it.name)
             }
         }
 
@@ -48,11 +48,11 @@ class MainWeatherViewModel(
 
     init {
 
-        val lastSearchId = state[LAST_WEATHER_ID] ?: ""
-        Log.d("lastSearchId", lastSearchId)
+        val lastSearchCityName = state[LAST_WEATHER_CITY_NAME] ?: ""
+        Log.d("lastSearchCityName", lastSearchCityName)
 
-        if (lastSearchId.isNotEmpty()) {
-            searchById(lastSearchId)
+        if (lastSearchCityName.isNotEmpty()) {
+            searchByCityNameOrZipCode(lastSearchCityName)
         } else {
             searchWithLastSearchRequestHistory()
         }
@@ -65,7 +65,7 @@ class MainWeatherViewModel(
             val searchHistoryList = searchRequestHistoryRepository.getSearchRequestHistoryAsync().await()
 
             if (searchHistoryList.isNotEmpty()) {
-                searchById(searchHistoryList[0].id)
+                searchByCityNameOrZipCode(searchHistoryList[0].cityName)
             }
 
         }
@@ -85,17 +85,9 @@ class MainWeatherViewModel(
 
     }
 
-    fun searchByCityNameOrZipCode(latLong: LatLng) {
+    fun searchByLatLong(latLong: LatLng) {
 
         val searchRequest = SearchRequest(lat = latLong.latitude, long = latLong.longitude)
-
-        _triggerSearchLiveData.value = searchRequest
-
-    }
-
-    fun searchById(weatherId: String) {
-
-        val searchRequest = SearchRequest(id = weatherId)
 
         _triggerSearchLiveData.value = searchRequest
 

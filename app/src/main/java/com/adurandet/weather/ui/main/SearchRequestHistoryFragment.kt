@@ -49,16 +49,16 @@ class SearchRequestHistoryFragment : Fragment() {
 
     private fun initViews(view: View) {
 
-        searchHistoryAdapter = WeatherSearchHistoryAdapter { weatherId ->
+        searchHistoryAdapter = WeatherSearchHistoryAdapter { weatherCityName ->
             findNavController().navigateUp()
-            sharedViewModel.setSearchRequestToLoad(weatherId)
+            sharedViewModel.setSearchRequestToLoad(weatherCityName)
         }
         
         val swipeHandler = object : SwipeToDeleteCallback(view.context) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val searchRequest = searchHistoryAdapter.currentList[viewHolder.adapterPosition]
-                searchRequestHistoryViewModel.onDeleteItemClicked(searchRequest.id)
+                searchRequestHistoryViewModel.onDeleteItemClicked(searchRequest.cityName)
             }
 
         }

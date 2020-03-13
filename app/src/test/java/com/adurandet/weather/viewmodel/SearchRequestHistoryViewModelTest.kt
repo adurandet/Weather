@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.adurandet.weather.forClass
 import com.adurandet.weather.mock
-import com.adurandet.weather.mockId
+import com.adurandet.weather.mockName
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.repository.Resource
 import com.adurandet.weather.repository.SearchRequestHistoryRepository
@@ -51,7 +51,7 @@ class SearchRequestHistoryViewModelTest {
     fun getSearchRequestHistoryTest() {
         runBlocking {
 
-            val mockSearchRequestHistoryList = listOf(SearchRequest(id = mockId))
+            val mockSearchRequestHistoryList = listOf(SearchRequest(cityName = mockName))
             val mockSearchRequestRepoResponse = GlobalScope.async { mockSearchRequestHistoryList }
             Mockito.doReturn(mockSearchRequestRepoResponse).`when`(searchRequestHistoryRepository)
                 .getSearchRequestHistoryAsync()

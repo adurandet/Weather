@@ -60,6 +60,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
         }
 
         view.weather_fragment_show_history_button.setOnClickListener {
+            view.weather_fragment_search_edt.text.clear()
             findNavController().navigate(R.id.action_navigation_home_to_weather_search_history)
         }
 
@@ -70,12 +71,12 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
 
         activity?.let { locationInteractor = LocationInteractor(it, this) }
 
-        mainWeatherViewModel.weatherLiveData.observe(this, Observer {
+        mainWeatherViewModel.weatherLiveData.observe(viewLifecycleOwner, Observer {
             processWeatherSearchResult(it)
         })
 
-        sharedViewModel.loadSearchRequestLiveData.observe( this, Observer {
-            mainWeatherViewModel.searchById(it)
+        sharedViewModel.loadSearchRequestLiveData.observe(viewLifecycleOwner, Observer {
+            mainWeatherViewModel.searchByCityNameOrZipCode(it)
         })
 
     }
@@ -90,7 +91,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
     }
 
     override fun onLocationReceived(latLng: LatLng) {
-        mainWeatherViewModel.searchByCityNameOrZipCode(latLng)
+        mainWeatherViewModel.searchByLatLong(latLng)
     }
 
     override fun onLocationPermissionsNotGranted() {

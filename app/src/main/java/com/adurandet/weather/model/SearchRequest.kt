@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "search_request")
 data class SearchRequest @JvmOverloads constructor(
-    @PrimaryKey var id: String = "",
-    @ColumnInfo(name = "city_name") var cityName: String = "",
+    // I use the city name as UUID, a better approach would be to use a unique ID,
+    // but due to the bug that the api search request by zip code return id = 0 and the the context of this simple exercise, city name is used.
+    @PrimaryKey @ColumnInfo(name = "city_name") var cityName: String = "",
     @Ignore val lat: Double? = null,
     @Ignore val long: Double? = null,
     @Ignore val zipCode: String? = null) {

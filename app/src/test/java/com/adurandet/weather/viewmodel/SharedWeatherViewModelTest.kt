@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.adurandet.weather.forClass
 import com.adurandet.weather.mock
-import com.adurandet.weather.mockId
+import com.adurandet.weather.mockName
 import com.adurandet.weather.ui.main.viewmodel.SharedWeatherViewModel
 import org.junit.Assert
 import org.junit.Before
@@ -33,12 +33,12 @@ class SharedWeatherViewModelTest {
     @Test
     fun searchWeatherByCityNameTest() {
 
-        sharedWeatherViewModel.setSearchRequestToLoad(mockId)
+        sharedWeatherViewModel.setSearchRequestToLoad(mockName)
 
         val captor: ArgumentCaptor<String> = forClass()
         captor.run {
             Mockito.verify(observer).onChanged(capture())
-            Assert.assertEquals(mockId, value)
+            Assert.assertEquals(mockName, value)
         }
 
     }

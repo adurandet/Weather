@@ -7,7 +7,7 @@ class SharedWeatherViewModel : ViewModel() {
 
     var loadSearchRequestLiveData = MutableLiveData<String>()
 
-    fun setSearchRequestToLoad(id: String) {
-        loadSearchRequestLiveData.value = id
+    fun setSearchRequestToLoad(cityName: String) {
+        loadSearchRequestLiveData.value = cityName
     }
 }

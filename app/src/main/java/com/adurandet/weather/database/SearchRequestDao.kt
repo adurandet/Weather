@@ -12,7 +12,7 @@ interface SearchRequestDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchRequest: SearchRequest)
 
-    @Query("DELETE FROM search_request WHERE id = :id")
-    fun delete(id: String)
+    @Query("DELETE FROM search_request WHERE city_name = :cityName")
+    fun delete(cityName: String)
 
 }

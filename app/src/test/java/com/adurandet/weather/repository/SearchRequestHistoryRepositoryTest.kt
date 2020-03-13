@@ -3,7 +3,6 @@ package com.adurandet.weather.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.adurandet.weather.database.SearchRequestDao
 import com.adurandet.weather.mock
-import com.adurandet.weather.mockId
 import com.adurandet.weather.mockName
 import com.adurandet.weather.model.SearchRequest
 import junit.framework.Assert
@@ -12,10 +11,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.get
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
@@ -44,7 +40,7 @@ class SearchRequestHistoryRepositoryTest {
     fun insertRequestTest() {
         runBlocking {
 
-            val searchRequest = SearchRequest(id = mockId, cityName = mockName)
+            val searchRequest = SearchRequest(cityName = mockName)
             Mockito.doNothing().`when`(searchRequestDao).insert(searchRequest)
 
             searchRequestHistoryRepository.insert(searchRequest)
@@ -58,7 +54,7 @@ class SearchRequestHistoryRepositoryTest {
     fun getSearchRequestHistoryTest() {
         runBlocking {
 
-            val searchRequestHistory = listOf(SearchRequest(id = mockId, cityName = mockName))
+            val searchRequestHistory = listOf(SearchRequest(cityName = mockName))
             Mockito.doReturn(searchRequestHistory).`when`(searchRequestDao).getAll()
 
             val result = searchRequestHistoryRepository.getSearchRequestHistoryAsync().await()

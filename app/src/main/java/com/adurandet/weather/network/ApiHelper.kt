@@ -61,8 +61,6 @@ class ApiHelper private constructor() {
 
     fun getWeatherByLatLong(lat: Double, long: Double) = apiInterface.getWeatherByLatLong(lat, long)
 
-    fun getWeatherById(id: String) = apiInterface.getWeatherById(id)
-
     fun getWeatherByCityName(cityName: String) = apiInterface.getWeatherByCityName(cityName)
 
     fun getWeatherByZipCode(zipCode: String) = apiInterface.getWeatherByZipCode(zipCode)

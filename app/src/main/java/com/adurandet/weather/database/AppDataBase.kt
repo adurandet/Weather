@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.adurandet.weather.model.SearchRequest
 import com.adurandet.weather.utils.DATABASE_NAME
 
-@Database(entities = [SearchRequest::class], version = 1)
+@Database(entities = [SearchRequest::class], version = 2 )
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun searchRequestDao(): SearchRequestDao
@@ -23,7 +23,11 @@ abstract class AppDataBase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDataBase {
-            return Room.databaseBuilder(context, AppDataBase::class.java, DATABASE_NAME).build()
+            return Room.databaseBuilder(context, AppDataBase::class.java, DATABASE_NAME)
+                // I am using a simple fallback destructive migration in the context of this exercise
+                // but a real migration plan should be added to keep data.
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 

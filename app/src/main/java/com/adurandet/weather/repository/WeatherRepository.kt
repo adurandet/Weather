@@ -26,13 +26,11 @@ class WeatherRepository( private val apiHelper: ApiHelper = get(ApiHelper::class
 
         val apiCall = with(searchRequest) {
             when {
-                !id.isNullOrEmpty() -> apiHelper.getWeatherById(id)
+                !cityName.isNullOrEmpty() -> apiHelper.getWeatherByCityName(cityName)
 
                 lat != null && long != null -> apiHelper.getWeatherByLatLong(lat, long)
 
                 !zipCode.isNullOrEmpty() -> apiHelper.getWeatherByZipCode(zipCode)
-
-                !cityName.isNullOrEmpty() -> apiHelper.getWeatherByCityName(cityName)
 
                 else -> null
             }
@@ -100,7 +98,6 @@ class WeatherRepository( private val apiHelper: ApiHelper = get(ApiHelper::class
 
 fun GetWeatherResponse.toWeather() =
     Weather(
-        id,
         name,
         weather[0].description,
         main.temp,

@@ -30,7 +30,7 @@ class WeatherSearchHistoryAdapter(
 
         fun bind(item: SearchRequest) {
             itemView.list_item_search_request_name.text = item.cityName
-            itemView.setOnClickListener { onItemClickListener(item.id) }
+            itemView.setOnClickListener { onItemClickListener(item.cityName) }
         }
 
     }
@@ -38,6 +38,6 @@ class WeatherSearchHistoryAdapter(
 }
 
 class DiffUtilLaunchItemCallback : DiffUtil.ItemCallback<SearchRequest>() {
-    override fun areItemsTheSame(oldItem: SearchRequest, newItem: SearchRequest) = oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: SearchRequest, newItem: SearchRequest) = oldItem.cityName == newItem.cityName
     override fun areContentsTheSame(oldItem: SearchRequest, newItem: SearchRequest) = oldItem == newItem
 }

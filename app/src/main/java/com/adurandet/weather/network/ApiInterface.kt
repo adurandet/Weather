@@ -11,9 +11,6 @@ interface ApiInterface {
     fun getWeatherByLatLong( @Query("lat") lat: Double,  @Query("lon") long: Double ): Call<GetWeatherResponse>
 
     @GET("weather")
-    fun getWeatherById(@Query("id") id: String): Call<GetWeatherResponse>
-
-    @GET("weather")
     fun getWeatherByCityName(@Query("q") cityName: String): Call<GetWeatherResponse>
 
     @GET("weather")

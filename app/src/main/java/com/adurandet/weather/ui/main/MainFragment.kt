@@ -69,7 +69,7 @@ class MainFragment : Fragment(), LocationInteractor.Callback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let { locationInteractor = LocationInteractor(it, this) }
+        locationInteractor = LocationInteractor(this, this)
 
         mainWeatherViewModel.weatherLiveData.observe(viewLifecycleOwner, Observer {
             processWeatherSearchResult(it)

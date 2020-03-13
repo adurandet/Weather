@@ -3,23 +3,21 @@ package com.adurandet.weather.interactor
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import com.adurandet.weather.model.LOCATION_REQUEST_CODE
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 
-class LocationInteractor(
-    private val activity: FragmentActivity,
-    private val callback: Callback
-) {
+class LocationInteractor(private val fragment: Fragment,
+                         private val callback: Callback) {
 
     private val PERMISSION_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
-    private val client = LocationServices.getFusedLocationProviderClient(activity)
+    private val client = LocationServices.getFusedLocationProviderClient(fragment.requireContext())
 
     fun verifyLocationPermissionsAndGetLocation() {
-        val permission = ActivityCompat.checkSelfPermission(activity, PERMISSION_LOCATION)
+        val permission = ActivityCompat.checkSelfPermission(fragment.requireContext(), PERMISSION_LOCATION)
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, arrayOf(PERMISSION_LOCATION), LOCATION_REQUEST_CODE)
+            fragment.requestPermissions(arrayOf(PERMISSION_LOCATION), LOCATION_REQUEST_CODE)
             return
         }
 

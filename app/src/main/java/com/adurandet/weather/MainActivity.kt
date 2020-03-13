@@ -26,9 +26,4 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        supportFragmentManager.findFragmentById(R.id.container)?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
 }
